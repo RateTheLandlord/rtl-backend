@@ -1,0 +1,13 @@
+version: '3'
+services:
+  rtl-backend:
+    container_name: RateTheLandlord-BE
+    build:
+      context: .
+      dockerfile: ./docker/${ENVIRONMENT}/Dockerfile
+    restart: unless-stopped
+    ports:
+      - ${BEPORT}:${BEPORT}
+    depends_on:
+      - postgres
+    env_file: .env

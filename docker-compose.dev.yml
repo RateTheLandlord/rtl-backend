@@ -1,0 +1,30 @@
+version: '3'
+services:
+
+  rtl-backend:
+    container_name: RateTheLandlord-BE
+    build:
+      context: .
+      dockerfile: ./docker/${ENVIRONMENT}/Dockerfile
+    restart: unless-stopped
+    ports:
+      - ${BEPORT}:${BEPORT}
+    depends_on:
+      - postgres
+    env_file: .env
+
+  postgres:
+    image: postgres
+    container_name: postgres
+    platform: linux/amd64
+    restart: unless-stopped
+    env_file: .env
+    environment:
+      POSTGRES_USER: ${PGUSERNAME}
+      POSTGRES_PASSWORD: ${PGPASSWORD}
+      POSTGRES_DB: ${PGDATABASE}
+    volumes:
+      - postgres-data:/var/lib/postgresql/data/
+
+volumes:
+  postgres-data:
