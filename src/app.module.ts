@@ -7,21 +7,23 @@ import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { PasswordModule } from './password/password.module';
 import { ThrottlerModule } from '@nestjs/throttler';
+import { ResourceModule } from './resource/resource.module';
 
 @Module({
-  imports: [
-    ConfigModule.forRoot(),
-    ThrottlerModule.forRoot({
-      ttl: 100,
-      limit: 10,
-    }),
-    ReviewModule,
-    CaptchaModule,
-    AuthModule,
-    UserModule,
-    PasswordModule,
-  ],
-  controllers: [AppController],
-  providers: [],
+	imports: [
+		ConfigModule.forRoot(),
+		ThrottlerModule.forRoot({
+			ttl: 100,
+			limit: 10,
+		}),
+		ReviewModule,
+		CaptchaModule,
+		AuthModule,
+		UserModule,
+		PasswordModule,
+		ResourceModule,
+	],
+	controllers: [AppController],
+	providers: [],
 })
 export class AppModule {}

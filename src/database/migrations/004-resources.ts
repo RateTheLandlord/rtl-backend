@@ -1,5 +1,5 @@
 exports.up = async function (DB) {
-    await DB`
+	await DB`
         CREATE TABLE resource (
             id SERIAL PRIMARY KEY,
             name TEXT,
@@ -9,6 +9,7 @@ exports.up = async function (DB) {
             address TEXT,
             phone_number TEXT,
             date_added TIMESTAMP DEFAULT now(),
+            description TEXT,
             href TEXT
         );
     `;

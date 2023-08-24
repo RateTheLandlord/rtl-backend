@@ -36,3 +36,7 @@ lerna-debug.log*
 
 # Secrets
 .env
+
+# documentation
+documentation/
+/documentation
