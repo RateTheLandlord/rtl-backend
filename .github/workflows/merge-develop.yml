@@ -19,7 +19,6 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Lint backend
         run: |
-          cd backend
           npm install
           npm run lint
 
@@ -38,6 +37,5 @@ jobs:
           node-version: ${{ matrix.node-version }}
       - name: Test frontend
         run: |
-          cd backend
           npm install
           npm run test

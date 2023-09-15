@@ -20,6 +20,11 @@ Then run the following commands:
 
 The project should not be running at `http://localhost` and pick up changes you make in you IDE
 
+## View API Documentation
+
+`npm run documentation:serve`
+
+You can now view the generated documentation at `localhost:3500`
 ## Load the Database with Dummy Reviews
 
 Make sure your docker environment is running.

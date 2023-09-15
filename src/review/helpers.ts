@@ -5,8 +5,8 @@ import { Review } from './models/review';
 import { HttpException } from '@nestjs/common';
 
 export interface IResult {
-  flagged: boolean;
-  flagged_reason: string;
+	flagged: boolean;
+	flagged_reason: string;
 }
 
 const SYSTEM_MESSAGE = `
@@ -27,55 +27,54 @@ Here is the review you need to check (reminder, you can only reply with TRUE or 
 `;
 
 const configuration = new Configuration({
-  apiKey: process.env.OPENAI_API_KEY,
+	apiKey: process.env.OPENAI_API_KEY,
 });
 const openai = new OpenAIApi(configuration);
 
 export const filterReviewWithAI = async (review: Review): Promise<IResult> => {
-  try {
-    const completion = await openai.createChatCompletion({
-      model: 'gpt-3.5-turbo',
-      messages: [
-        { role: 'system', content: SYSTEM_MESSAGE },
-        { role: 'user', content: review.review },
-      ],
-    });
+	try {
+		const completion = await openai.createChatCompletion({
+			model: 'gpt-3.5-turbo',
+			messages: [
+				{ role: 'system', content: SYSTEM_MESSAGE },
+				{ role: 'user', content: review.review },
+			],
+		});
 
-    const result = completion.data.choices[0].message.content ?? '';
+		const result = completion.data.choices[0].message.content ?? '';
 
-    if (result.includes('TRUE')) {
-      return { flagged: true, flagged_reason: 'AI FLAGGED REVIEW' };
-    } else {
-      return { flagged: false, flagged_reason: '' };
-    }
-  } catch (e) {
-    throw e;
-  }
+		if (result.includes('TRUE')) {
+			return { flagged: true, flagged_reason: 'AI FLAGGED REVIEW' };
+		} else {
+			return { flagged: false, flagged_reason: '' };
+		}
+	} catch (e) {
+		throw e;
+	}
 };
 
 const badWordsFilter = new BadWordsFilter();
 
 export const filterReview = (review: Review) => {
-  // Replace addresses
-  // This pattern is more permissive and covers a wider range of addresses, but may also have false positives
-  const addressPattern =
-    /(^|\s)\d+\s+\w+(\s+\w+)*(,\s*\w+(\s+\w+)*)*(\s+(Avenue|Street|Road|Boulevard|Drive|Terrace|Place|Court|Crescent|Lane|Parkway|Way|Circle|Heights|Loop|Alley|Run|Glen|Bend|Plaza|Trace|Row))?(\.)?(?=\s|$)/gi;
-  // Replace phone numbers
-  const phonePattern =
-    /(\+\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?(\d{1,4}[-.\s]?){2,4}\d{1,4}([-.\s]?(x|ext\.?|extension)\s?\d{1,6})?/gi;
+	// Replace addresses
+	// This pattern is more permissive and covers a wider range of addresses, but may also have false positives
+	const addressPattern =
+		/(^|\s)\d+\s+\w+(\s+\w+)*(,\s*\w+(\s+\w+)*)*(\s+(Avenue|Street|Road|Boulevard|Drive|Terrace|Place|Court|Crescent|Lane|Parkway|Way|Circle|Heights|Loop|Alley|Run|Glen|Bend|Plaza|Trace|Row))?(\.)?(?=\s|$)/gi;
+	// Replace phone numbers
+	const phonePattern = /(\+\d{1,4}[-.\s]?)?(\(?\d{1,4}\)?[-.\s]?)?(\d{1,4}[-.\s]?){2,4}\d{1,4}([-.\s]?(x|ext\.?|extension)\s?\d{1,6})?/gi;
 
-  // Replace emails
-  const emailPattern = /[\w\.-]+@[\w\.-]+\.\w+/gi;
+	// Replace emails
+	const emailPattern = /[\w\.-]+@[\w\.-]+\.\w+/gi;
 
-  if (addressPattern.test(review.review)) {
-    return { flagged: true, reason: 'Filter Flagged for Address' };
-  } else if (emailPattern.test(review.review)) {
-    return { flagged: true, reason: 'Filter Flagged for Email' };
-  } else if (phonePattern.test(review.review)) {
-    return { flagged: true, reason: 'Filter flagged for Phone Number' };
-  } else if (badWordsFilter.isProfane(review.review)) {
-    return { flagged: true, reason: 'Filter flagged for Language' };
-  } else {
-    return { flagged: false, reason: '' };
-  }
+	if (addressPattern.test(review.review)) {
+		return { flagged: true, reason: 'Filter Flagged for Address' };
+	} else if (emailPattern.test(review.review)) {
+		return { flagged: true, reason: 'Filter Flagged for Email' };
+	} else if (phonePattern.test(review.review)) {
+		return { flagged: true, reason: 'Filter flagged for Phone Number' };
+	} else if (badWordsFilter.isProfane(review.review)) {
+		return { flagged: true, reason: 'Filter flagged for Language' };
+	} else {
+		return { flagged: false, reason: '' };
+	}
 };
