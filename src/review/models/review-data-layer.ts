@@ -10,26 +10,21 @@ import { FAILED_TO_RETRIEVE_REVIEWS } from '../../auth/constants';
  */
 @Injectable()
 export class ReviewModel {
-  constructor(private readonly databaseService: DatabaseService) {}
+	constructor(private readonly databaseService: DatabaseService) {}
 
-  public async createReview(
-    inputReview: Review,
-    filterResult: IResult,
-  ): Promise<Review> {
-    try {
-      inputReview.landlord = inputReview.landlord
-        .substring(0, 150)
-        .toLocaleUpperCase();
-      inputReview.country_code = inputReview.country_code.toLocaleUpperCase();
-      inputReview.city = inputReview.city.substring(0, 150).toLocaleUpperCase();
-      inputReview.state = inputReview.state.toLocaleUpperCase();
-      inputReview.zip = inputReview.zip.substring(0, 50).toLocaleUpperCase();
-      inputReview.admin_approved = null;
-      inputReview.flagged = filterResult.flagged;
-      inputReview.flagged_reason = filterResult.flagged_reason;
+	public async createReview(inputReview: Review, filterResult: IResult): Promise<Review> {
+		try {
+			inputReview.landlord = inputReview.landlord.substring(0, 150).toLocaleUpperCase();
+			inputReview.country_code = inputReview.country_code.toLocaleUpperCase();
+			inputReview.city = inputReview.city.substring(0, 150).toLocaleUpperCase();
+			inputReview.state = inputReview.state.toLocaleUpperCase();
+			inputReview.zip = inputReview.zip.substring(0, 50).toLocaleUpperCase();
+			inputReview.admin_approved = null;
+			inputReview.flagged = filterResult.flagged;
+			inputReview.flagged_reason = filterResult.flagged_reason;
 
-      const id: number = (
-        await this.databaseService.sql<{ id: number }[]>`
+			const id: number = (
+				await this.databaseService.sql<{ id: number }[]>`
           INSERT INTO review
           (landlord, country_code, city, state, zip, review, repair, health, stability, privacy, respect, flagged,
           flagged_reason, admin_approved, admin_edited)
@@ -40,33 +35,29 @@ export class ReviewModel {
           ${inputReview.flagged_reason}, ${inputReview.admin_approved}, ${inputReview.admin_edited})
           RETURNING id;
         `
-      )[0].id;
+			)[0].id;
 
-      inputReview.id = id;
-      return inputReview;
-    } catch (e) {
-      throw e;
-    }
-  }
+			inputReview.id = id;
+			return inputReview;
+		} catch (e) {
+			throw e;
+		}
+	}
 
-  public async getExistingReviewsForLandlord(
-    inputReview: Review,
-  ): Promise<Review[]> {
-    try {
-      return await this.databaseService.sql<Review[]>`SELECT REVIEW
+	public async getExistingReviewsForLandlord(inputReview: Review): Promise<Review[]> {
+		try {
+			return await this.databaseService.sql<Review[]>`SELECT REVIEW
         FROM review
         WHERE landlord = ${inputReview.landlord.toLocaleUpperCase()}
           AND ZIP = ${inputReview.zip.toLocaleUpperCase()};`;
-    } catch (e) {
-      throw new InternalServerErrorException(FAILED_TO_RETRIEVE_REVIEWS);
-    }
-  }
+		} catch (e) {
+			throw new InternalServerErrorException(FAILED_TO_RETRIEVE_REVIEWS);
+		}
+	}
 
-  public async update(id: number, review: Review): Promise<Review> {
-    await this.databaseService.sql`UPDATE review
-           SET landlord = ${review.landlord
-             .substring(0, 150)
-             .toLocaleUpperCase()},
+	public async update(id: number, review: Review): Promise<Review> {
+		await this.databaseService.sql`UPDATE review
+           SET landlord = ${review.landlord.substring(0, 150).toLocaleUpperCase()},
                country_code = ${review.country_code.toLocaleUpperCase()},
                city = ${review.city.substring(0, 150).toLocaleUpperCase()},
                state = ${review.state.toLocaleUpperCase()},
@@ -83,6 +74,6 @@ export class ReviewModel {
                admin_edited   = ${review.admin_edited}
            WHERE id = ${id};`;
 
-    return review;
-  }
+		return review;
+	}
 }

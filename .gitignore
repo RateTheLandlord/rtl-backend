@@ -40,3 +40,6 @@ lerna-debug.log*
 # documentation
 documentation/
 /documentation
+
+**/certificates/
+*.crt
