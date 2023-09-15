@@ -13,7 +13,7 @@ type ResourceQuery = {
 };
 
 @Injectable()
-export class ResourceService {
+export class TenantResourceService {
 	constructor(private readonly databaseService: DatabaseService, private resourceDataLayerService: ResourceModel) {}
 
 	public async get(params: ResourceQuery): Promise<ResourcesResponse> {

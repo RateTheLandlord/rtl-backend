@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
 import { INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE } from '../auth/constants';
-import { ResourceService } from './resource.service';
+import { TenantResourceService } from './tenant-resource.service';
 import { Resource, ResourcesResponse } from './models/resource';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 
@@ -10,9 +10,10 @@ export type ResourceControllerException = {
 	message: string | object;
 };
 
-@Controller('resource')
-export class ResourceController {
-	constructor(private readonly resourceService: ResourceService) {}
+@Controller('tenant-resource')
+export class TenantResourceController {
+	constructor(private readonly resourceService: TenantResourceService) {}
+
 	private handleException(e: BadRequestException | HttpException | unknown): never {
 		if (e instanceof BadRequestException) {
 			throw new HttpException(NOT_ACCEPTABLE, HttpStatus.NOT_ACCEPTABLE);

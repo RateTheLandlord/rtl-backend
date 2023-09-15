@@ -7,7 +7,7 @@ import { UserModule } from './user/user.module';
 import { AppController } from './app.controller';
 import { PasswordModule } from './password/password.module';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { ResourceModule } from './resource/resource.module';
+import { TenantResourceModule } from './tenant-resource/tenant-resource.module';
 
 @Module({
 	imports: [
@@ -21,7 +21,7 @@ import { ResourceModule } from './resource/resource.module';
 		AuthModule,
 		UserModule,
 		PasswordModule,
-		ResourceModule,
+		TenantResourceModule,
 	],
 	controllers: [AppController],
 	providers: [],
