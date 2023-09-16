@@ -6,12 +6,5 @@ const environment = process.env.ENVIRONMENT as string;
 
 @Injectable()
 export class DatabaseService {
-	sql =
-		environment === 'production'
-			? postgres(process.env.PGURL as string, {
-					ssl: {
-						ca: [fs.readFileSync('./src/database/ca-certificate.crt')],
-					},
-			  })
-			: postgres();
+	sql = environment === 'production' ? postgres(process.env.PGURL as string) : postgres();
 }
