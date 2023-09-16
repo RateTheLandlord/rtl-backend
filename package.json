@@ -1,10 +1,10 @@
 {
 	"name": "backend",
-	"version": "0.0.1",
-	"description": "",
-	"author": "",
+	"version": "2.0.0",
+	"description": "Backend API for RateTheLandlord.org",
+	"author": "ratethelandlord",
 	"private": true,
-	"license": "UNLICENSED",
+	"license": "GNUgpl",
 	"scripts": {
 		"prebuild": "rimraf dist",
 		"build": "nest build",

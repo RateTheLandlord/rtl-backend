@@ -12,8 +12,8 @@ export class CaptchaService {
 
 	async verifyToken(token: string, ip?: string): Promise<boolean> {
 		const data: CaptchaPayload = {
-			secret: process.env.HCPATCHA_SECRET_KEY,
-			sitekey: process.env.HCPATCHA_SITE_KEY,
+			secret: process.env.HCAPTCHA_SECRET_KEY,
+			sitekey: process.env.HCAPTCHA_SITE_KEY,
 			response: token,
 			remoteip: ip ? ip : undefined,
 		};
