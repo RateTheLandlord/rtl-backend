@@ -12,19 +12,20 @@ Set the environment to `development`
 
 Then run the following commands:
 
-- Install Packages
-  `npm i`
+- Install Packages `npm i`
 
-- Start
-  `docker-compose -f docker-compose.dev.yml up -d --build`
+- Start `docker-compose -f docker-compose.dev.yml up -d --build`
 
 The project should not be running at `http://localhost` and pick up changes you make in you IDE
+
+This will also create a Postgres DB for you to use for develop
 
 ## View API Documentation
 
 `npm run documentation:serve`
 
 You can now view the generated documentation at `localhost:3500`
+
 ## Load the Database with Dummy Reviews
 
 Make sure your docker environment is running.
