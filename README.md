@@ -51,6 +51,16 @@ If you are trying to submit a review locally, you need to edit your hosts file t
 
 - [How to use WSL development environment in WebStorm](https://www.jetbrains.com/help/webstorm/how-to-use-wsl-development-environment-in-product.html)
 
+#### Unable to Commit
+
+This project uses Husky to run a pre-commit check to make sure the project passes tests and linting. It also formats the files to prettier standard we have set.
+
+If it fails, then there is a chance that your changes have linting errors, or broke some tests.
+
+You may get this error: `/usr/bin/env: ‘sh\r’: No such file or directory`
+
+If you encounter this error, you'll need to install `dos2unix` in your terminal. Then run `sudo dos2unix .husky/pre-commit`.
+
 ## Contributing
 
 Contributions are always welcome!
