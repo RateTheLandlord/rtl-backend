@@ -20,8 +20,7 @@
 		"test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
 		"test:e2e": "jest --config ./test/jest-e2e.json",
 		"documentation:serve": "PORT=3001 npx @compodoc/compodoc -p tsconfig.json --serve -s -r 3500",
-		"compodoc": "PORT=3001 npx compodoc -p tsconfig.doc.json",
-		"prepare": "husky install"
+		"compodoc": "PORT=3001 npx compodoc -p tsconfig.doc.json"
 	},
 	"dependencies": {
 		"@compodoc/compodoc": "^1.1.21",
