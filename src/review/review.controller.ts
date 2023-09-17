@@ -1,7 +1,6 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import { CaptchaService } from 'src/captcha/captcha-service';
-import { IpAddress } from 'src/decorators/ip-address/ip-address.decorator';
 import { CreateReview } from './models/create-review';
 import { IStats, Review, ReviewsResponse } from './models/review';
 import { ReviewService } from './review.service';
@@ -67,8 +66,8 @@ export class ReviewController {
 
 	@Throttle(5, 60)
 	@Put('/report/:id')
-	async report(@Param('id') id: number, @Body() body: any, @IpAddress() ip: string): Promise<number> {
-		const validRequest: boolean = await this.captchaService.verifyToken(body.captchaToken, ip);
+	async report(@Param('id') id: number, @Body() body: any): Promise<number> {
+		const validRequest: boolean = await this.captchaService.verifyToken(body.captchaToken);
 
 		if (!validRequest) {
 			throw new BadRequestException('Invalid captcha');
@@ -87,9 +86,9 @@ export class ReviewController {
 	//Create Review
 	@Throttle(2, 2628000)
 	@Post()
-	async create(@Body() review: CreateReview, @IpAddress() ip: string): Promise<Review | ReviewControllerException> {
+	async create(@Body() review: CreateReview): Promise<Review | ReviewControllerException> {
 		try {
-			await this.captchaService.verifyToken(review.captchaToken, ip);
+			await this.captchaService.verifyToken(review.captchaToken);
 			return await this.reviewService.create(review.review);
 		} catch (e) {
 			return this.handleException(e);

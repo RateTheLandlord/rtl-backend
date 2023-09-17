@@ -15,7 +15,7 @@ async function bootstrap() {
 
 	app.use(requestIp.mw());
 	app.enableCors({
-		origin: ['http://localhost/', 'http://159.203.4.57/'],
+		origin: process.env.CORS_ORIGIN,
 	});
 	await createAdminUser();
 	await app.listen(8080);
