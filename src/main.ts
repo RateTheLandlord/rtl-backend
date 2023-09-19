@@ -18,6 +18,6 @@ async function bootstrap() {
 		origin: process.env.CORS_ORIGIN,
 	});
 	await createAdminUser();
-	await app.listen(process.env.PORT);
+	await app.listen(process.env.BEPORT);
 }
 bootstrap();
