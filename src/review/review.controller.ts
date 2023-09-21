@@ -7,6 +7,8 @@ import { ReviewService } from './review.service';
 import { Throttle } from '@nestjs/throttler';
 import { INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE } from '../auth/constants';
 
+const isProd = process.env.ENVIRONMENT === 'production';
+
 export type ReviewControllerException = {
 	statusCode: number;
 	message: string | object;
@@ -89,7 +91,7 @@ export class ReviewController {
 	}
 
 	//Create Review
-	@Throttle(2, 2628000)
+	@Throttle(2, isProd ? 2628000 : 20)
 	@Post()
 	async create(@Body() review: CreateReview): Promise<Review | ReviewControllerException> {
 		console.log('CREATE REVIEW');
