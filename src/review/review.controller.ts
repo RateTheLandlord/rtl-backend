@@ -97,6 +97,7 @@ export class ReviewController {
 			await this.captchaService.verifyToken(review.captchaToken);
 			return await this.reviewService.create(review.review);
 		} catch (e) {
+			console.log('ERROR SUBMITTING REVIEW: ', e);
 			return this.handleException(e);
 		}
 	}
