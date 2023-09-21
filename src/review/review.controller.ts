@@ -37,6 +37,7 @@ export class ReviewController {
 		@Query('city') city?: string,
 		@Query('zip') zip?: string,
 	): Promise<ReviewsResponse> {
+		console.log('GET ALL REVIEWS');
 		return this.reviewService.get({
 			page,
 			limit,
@@ -53,6 +54,7 @@ export class ReviewController {
 	@Throttle(2, 10)
 	@Get('review/:id')
 	findOne(@Param('id') id: string): Promise<Review[]> {
+		console.log('GET REVIEW: ', id);
 		return this.reviewService.findOne(Number(id));
 	}
 
@@ -61,12 +63,14 @@ export class ReviewController {
 	@UseGuards(JwtAuthGuard)
 	@Put('/:id')
 	async update(@Param('id') id: number, @Body() review: Review): Promise<Review> {
+		console.log('UPDATE REVIEW: ', id);
 		return this.reviewService.update(id, review);
 	}
 
 	@Throttle(5, 60)
 	@Put('/report/:id')
 	async report(@Param('id') id: number, @Body() body: any): Promise<number> {
+		console.log('REPORT REVIEW: ', id);
 		const validRequest: boolean = await this.captchaService.verifyToken(body.captchaToken);
 
 		if (!validRequest) {
@@ -80,6 +84,7 @@ export class ReviewController {
 	@UseGuards(JwtAuthGuard)
 	@Delete('/:id')
 	async delete(@Param('id') id: number): Promise<boolean> {
+		console.log('DELETE REVIEW: ', id);
 		return this.reviewService.delete(id);
 	}
 
@@ -87,6 +92,7 @@ export class ReviewController {
 	@Throttle(2, 2628000)
 	@Post()
 	async create(@Body() review: CreateReview): Promise<Review | ReviewControllerException> {
+		console.log('CREATE REVIEW');
 		try {
 			await this.captchaService.verifyToken(review.captchaToken);
 			return await this.reviewService.create(review.review);
@@ -100,6 +106,7 @@ export class ReviewController {
 	@UseGuards(JwtAuthGuard)
 	@Get('/flagged')
 	getFlagged(): Promise<Review[]> {
+		console.log('GET FLAGGED REVIEWS');
 		return this.reviewService.getFlagged();
 	}
 
@@ -107,18 +114,21 @@ export class ReviewController {
 	@UseGuards(JwtAuthGuard)
 	@Get('/stats')
 	getStats(): Promise<IStats> {
+		console.log('GET STATS');
 		return this.reviewService.getStats();
 	}
 
 	@Throttle(10, 120)
 	@Get('/landlords')
 	getLandlords(): Promise<string[]> {
+		console.log('GET LANDLORDS');
 		return this.reviewService.getLandlords();
 	}
 
 	@Throttle(10, 120)
 	@Post('/landlords/landlord')
 	getLandlordReviews(@Body() landlord: { landlord: string }): Promise<Review[]> {
+		console.log('GET LANDLORD: ', landlord);
 		return this.reviewService.getLandlordReviews(landlord.landlord);
 	}
 
@@ -126,6 +136,7 @@ export class ReviewController {
 	@Throttle(10, 30)
 	@Get('/landlord/suggestions')
 	async getLandlordSuggestions(@Query('landlord') landlord: string): Promise<string[]> {
+		console.log('GET LANDLORD SUGGESTIONS');
 		return this.reviewService.getLandlordSuggestions(landlord);
 	}
 }
