@@ -128,9 +128,9 @@ export class ReviewController {
 
 	@Throttle(10, 120)
 	@Post('/landlords/landlord')
-	getLandlordReviews(@Body() landlord: { landlord: string }): Promise<Review[]> {
-		console.log('GET LANDLORD: ', landlord);
-		return this.reviewService.getLandlordReviews(landlord.landlord);
+	getLandlordReviews(@Body() body: { landlord: string }): Promise<Review[]> {
+		console.log('GET LANDLORD: ', body.landlord);
+		return this.reviewService.getLandlordReviews(body.landlord);
 	}
 
 	// Get landlord name suggestions
