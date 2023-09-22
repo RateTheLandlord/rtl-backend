@@ -14,4 +14,4 @@ jobs:
         env:
           WEBHOOK_URL: ${{secrets.DEVELOP_DEPLOY_HOOK}}
         run: |
-          curl -X GET WEBHOOK_URL
+          curl -X GET $WEBHOOK_URL
