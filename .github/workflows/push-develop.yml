@@ -11,5 +11,7 @@ jobs:
 
     steps:
       - name: Trigger Webhook
+        env:
+          WEBHOOK_URL: ${{secrets.DEVELOP_DEPLOY_HOOK}}
         run: |
-          curl -X ${{secrets.DEVELOP_DEPLOY_HOOK}}
+          curl -X GET WEBHOOK_URL
