@@ -71,7 +71,7 @@ export class TenantResourceService {
 		// Fetch cities
 		const cities = await sql`
         SELECT DISTINCT city
-        FROM resource
+        FROM tenant_resource
         WHERE 1 = 1 ${countryClause} ${stateClause};
     `;
 		const cityList = cities.map(({ city }) => city);
@@ -102,7 +102,7 @@ export class TenantResourceService {
 	public async delete(id: number): Promise<boolean> {
 		await this.databaseService.sql`
 			DELETE
-			FROM resource
+			FROM tenant_resource
 			WHERE id = ${id};
 		`;
 		return true;
