@@ -10,9 +10,8 @@ WORKDIR /app
 # Copy package.json and package-lock.json
 # to the /app working directory
 COPY package*.json /app/
-COPY .env /app/
 
-RUN npm install --production
+RUN npm install --omit=dev
 
 # Copy the rest of our Nest folder into /app
 COPY . /app

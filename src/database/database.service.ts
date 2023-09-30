@@ -1,7 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import postgres from 'postgres';
+import * as fs from 'fs';
+
+const environment = process.env.ENVIRONMENT as string;
 
 @Injectable()
 export class DatabaseService {
-  sql = postgres();
+	sql = environment === 'production' ? postgres(process.env.PGURL as string) : postgres();
 }

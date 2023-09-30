@@ -4,8 +4,8 @@ import { PasswordController } from './password.controller';
 import { DatabaseService } from 'src/database/database.service';
 
 @Module({
-  providers: [PasswordService, DatabaseService],
-  controllers: [PasswordController],
-  exports: [PasswordService],
+	providers: [PasswordService, DatabaseService],
+	controllers: [PasswordController],
+	exports: [PasswordService],
 })
 export class PasswordModule {}

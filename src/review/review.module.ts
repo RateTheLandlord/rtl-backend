@@ -7,14 +7,9 @@ import { ReviewSimilarityService } from './review-text-match';
 import { ReviewModel } from './models/review-data-layer';
 
 @Module({
-  imports: [CaptchaModule],
-  controllers: [ReviewController],
-  providers: [
-    ReviewService,
-    DatabaseService,
-    ReviewSimilarityService,
-    ReviewModel,
-  ],
-  exports: [ReviewService],
+	imports: [CaptchaModule],
+	controllers: [ReviewController],
+	providers: [ReviewService, DatabaseService, ReviewSimilarityService, ReviewModel],
+	exports: [ReviewService],
 })
 export class ReviewModule {}
