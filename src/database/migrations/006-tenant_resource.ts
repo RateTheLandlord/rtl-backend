@@ -1,6 +1,6 @@
 exports.up = async function (DB) {
 	await DB`
-        CREATE TABLE resource (
+        CREATE TABLE tenant_resource (
             id SERIAL PRIMARY KEY,
             name TEXT,
             country_code VARCHAR(2),
