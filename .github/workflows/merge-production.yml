@@ -38,36 +38,3 @@ jobs:
         run: |
           npm install
           npm run test
-
-  docker-build:
-    runs-on: ubuntu-latest
-    needs: [lint-be, test-be]
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Create env file
-        run: |
-          touch .env
-          echo ENVIRONMENT=${{secrets.ENVIRONMENT}} >> .env
-          echo HCAPTCHA_SECRET_KEY=${{secrets.HCAPTCHA_SECRET_KEY}} >> .env
-          echo JWT_KEY="${{secrets.JWT_KEY}}" >> .env
-          echo OPENAI_API_KEY=${{secrets.OPENAI_API_KEY}} >> .env
-          echo PGDATABASE=${{secrets.PGDATABASE}} >> .env
-          echo PGHOST=${{secrets.PGHOST}} >> .env
-          echo PGPASSWORD="${{secrets.PGPASSWORD}}" >> .env
-          echo PGPORT=${{secrets.PGPORT}} >> .env
-          echo PGSSL=${{secrets.PGSSL}} >> .env
-          echo PGURL=${{secrets.PGURL}} >> .env
-          echo PGUSERNAME=${{secrets.PGUSERNAME}} >> .env
-          cat .env
-      - name: Pull Docker
-        run: docker-compose pull
-      - name: Build Docker
-        run: docker-compose build
