@@ -14,7 +14,7 @@ export class ResourceModel {
 			inputResource.state = inputResource.state.toLocaleUpperCase();
 
 			inputResource.id = this.databaseService.sql`
-					INSERT INTO resource
+					INSERT INTO tenant_resource
 					(name, country_code, city, state, address, phone_number, description, href)
 					VALUES
 					(${inputResource.name}, ${inputResource.country_code}, ${inputResource.city}, ${inputResource.state},
@@ -30,7 +30,7 @@ export class ResourceModel {
 
 	public async update(id: number, resource: Resource): Promise<Resource> {
 		await this.databaseService.sql`
-			UPDATE resource 
+			UPDATE tenant_resource 
 			SET 
 			name = ${resource.name}, 
 			country_code = ${resource.country_code}, 
