@@ -1,5 +1,12 @@
 exports.up = async function (DB) {
-	await DB`
+	const tableExists = await DB`
+  SELECT EXISTS (
+    SELECT 1
+    FROM information_schema.tables
+    WHERE table_name = 'users'
+  )`;
+	if (!tableExists[0].exists) {
+		await DB`
       CREATE TABLE users (
         id SERIAL PRIMARY KEY, 
         name TEXT,
@@ -7,7 +14,12 @@ exports.up = async function (DB) {
         password TEXT,
         blocked BOOLEAN,
         role TEXT,
-        UNIQUE (email)
+        UNIQUE (email),
+        login_attempts numeric DEFAULT 0,
+        login_lockout numeric DEFAULT 0,
+        last_login_attempt TIMESTAMP DEFAULT now(),
+        lockout_time TIMESTAMP DEFAULT now()
       );
     `;
+	}
 };
