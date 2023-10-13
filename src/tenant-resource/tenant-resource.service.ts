@@ -48,22 +48,22 @@ export class TenantResourceService {
 		// Fetch Resources
 		const resources = (await sql`
 			SELECT * 
-			FROM resource
+			FROM tenant_resource
 			WHERE 1 = 1 ${searchClause} ${stateClause} ${countryClause} ${cityClause} LIMIT ${limit} 
 			OFFSET ${offset}
 		`) as Array<Resource>;
 
 		// Fetch Total Number of Resources
-		const totalResult = await sql`SELECT COUNT(*) as count FROM resource WHERE 1=1 ${searchClause} ${stateClause} ${countryClause} ${cityClause}`;
+		const totalResult = await sql`SELECT COUNT(*) as count FROM tenant_resource WHERE 1=1 ${searchClause} ${stateClause} ${countryClause} ${cityClause}`;
 		const total = totalResult[0].count;
 
 		//Fetch Countries
-		const countries = await sql`SELECT DISTINCT country_code FROM resource;`;
+		const countries = await sql`SELECT DISTINCT country_code FROM tenant_resource;`;
 		const countryList = countries.map(({ country_code }) => country_code);
 
 		const states = await sql`
         SELECT DISTINCT state
-        FROM resource
+        FROM tenant_resource
         WHERE 1 = 1 ${countryClause};
     `;
 		const stateList = states.map(({ state }) => state);

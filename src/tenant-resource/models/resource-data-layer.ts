@@ -13,14 +13,18 @@ export class ResourceModel {
 			inputResource.city = inputResource.city.substring(0, 150).toLocaleUpperCase();
 			inputResource.state = inputResource.state.toLocaleUpperCase();
 
-			inputResource.id = this.databaseService.sql`
+			const id: number = (
+				await this.databaseService.sql<{ id: number }[]>`
 					INSERT INTO tenant_resource
 					(name, country_code, city, state, address, phone_number, description, href)
 					VALUES
 					(${inputResource.name}, ${inputResource.country_code}, ${inputResource.city}, ${inputResource.state},
 					 ${inputResource.address}, ${inputResource.phone_number}, ${inputResource.description}, ${inputResource.href})
 					RETURNING id;
-				`[0].id;
+				`
+			)[0].id;
+
+			inputResource.id = id;
 
 			return inputResource;
 		} catch (e) {
