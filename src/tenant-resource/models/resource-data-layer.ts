@@ -33,19 +33,23 @@ export class ResourceModel {
 	}
 
 	public async update(id: number, resource: Resource): Promise<Resource> {
-		await this.databaseService.sql`
-			UPDATE tenant_resource 
-			SET 
-			name = ${resource.name}, 
-			country_code = ${resource.country_code}, 
-			city = ${resource.city}, 
-			state = ${resource.state},
-			address = ${resource.address}, 
-			phone_number = ${resource.phone_number}, 
-			description = ${resource.description}, 
-			href = ${resource.href}
-			WHERE id = ${id};
-		`;
-		return resource;
+		try {
+			await this.databaseService.sql`
+				UPDATE tenant_resource 
+				SET 
+				name = ${resource.name}, 
+				country_code = ${resource.country_code}, 
+				city = ${resource.city}, 
+				state = ${resource.state},
+				address = ${resource.address}, 
+				phone_number = ${resource.phone_number}, 
+				description = ${resource.description}, 
+				href = ${resource.href}
+				WHERE id = ${id};
+			`;
+			return resource;
+		} catch (error) {
+			console.log(error);
+		}
 	}
 }
