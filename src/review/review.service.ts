@@ -74,6 +74,7 @@ export class ReviewService {
         SELECT *
         FROM review
         WHERE 1 = 1 ${searchClause} ${stateClause} ${countryClause} ${cityClause} ${zipClause}
+		AND flagged = false
         ORDER BY ${orderBy} ${sortOrder} LIMIT ${limit}
         OFFSET ${offset}
     `) as any;
