@@ -334,7 +334,7 @@ export class ReviewService {
 	public async getLandlordSuggestions(landlord: string): Promise<string[]> {
 		if (!landlord) return [];
 		const suggestions = await this.databaseService.sql`
-    SELECT DISTINCT landlord FROM review WHERE landlord LIKE ${'%' + landlord.toLocaleUpperCase() + '%'}
+    SELECT DISTINCT landlord FROM review WHERE landlord LIKE ${'%' + landlord.toLocaleUpperCase() + '%'} ORDER BY date_added DESC
     `;
 		return suggestions.map(({ landlord }) => landlord);
 	}
