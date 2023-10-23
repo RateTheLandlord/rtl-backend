@@ -328,13 +328,13 @@ export class ReviewService {
 
 		return this.databaseService.sql<Review[]>`Select *
       FROM review
-      WHERE landlord IN (${landlord});`;
+      WHERE landlord IN (${landlord}) ORDER BY date_added DESC`;
 	}
 
 	public async getLandlordSuggestions(landlord: string): Promise<string[]> {
 		if (!landlord) return [];
 		const suggestions = await this.databaseService.sql`
-    SELECT DISTINCT landlord FROM review WHERE landlord LIKE ${'%' + landlord.toLocaleUpperCase() + '%'} ORDER BY date_added DESC
+    SELECT DISTINCT landlord FROM review WHERE landlord LIKE ${'%' + landlord.toLocaleUpperCase() + '%'}
     `;
 		return suggestions.map(({ landlord }) => landlord);
 	}
