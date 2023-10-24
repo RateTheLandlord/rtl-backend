@@ -9,7 +9,7 @@ type ReviewQuery = {
 	page?: number;
 	limit?: number;
 	search?: string;
-	sort?: 'az' | 'za' | 'new' | 'old';
+	sort?: 'az' | 'za' | 'new' | 'old' | 'high' | 'low';
 	state?: string;
 	country?: string;
 	city?: string;
@@ -39,9 +39,11 @@ export class ReviewService {
 			orderBy = sql`landlord`;
 		} else if (sort === 'new' || sort === 'old') {
 			orderBy = sql`date_added`;
+		} else if (sort === 'high' || sort === 'low') {
+			orderBy = sql`(repair + health + stability + privacy + respect) / 5`;
 		}
 
-		const sortOrder = sort === 'az' || sort === 'old' ? sql`ASC` : sql`DESC`;
+		const sortOrder = sort === 'az' || sort === 'old' || sort === 'low' ? sql`ASC` : sql`DESC`;
 
 		const searchClause =
 			search?.length > 0
@@ -72,6 +74,7 @@ export class ReviewService {
         SELECT *
         FROM review
         WHERE 1 = 1 ${searchClause} ${stateClause} ${countryClause} ${cityClause} ${zipClause}
+		AND flagged = false
         ORDER BY ${orderBy} ${sortOrder} LIMIT ${limit}
         OFFSET ${offset}
     `) as any;
@@ -325,7 +328,7 @@ export class ReviewService {
 
 		return this.databaseService.sql<Review[]>`Select *
       FROM review
-      WHERE landlord IN (${landlord});`;
+      WHERE landlord IN (${landlord}) ORDER BY date_added DESC`;
 	}
 
 	public async getLandlordSuggestions(landlord: string): Promise<string[]> {

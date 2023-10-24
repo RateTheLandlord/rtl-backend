@@ -16,7 +16,7 @@ exports.up = async function (DB) {
         role TEXT,
         UNIQUE (email),
         login_attempts numeric DEFAULT 0,
-        login_lockout numeric DEFAULT 0,
+        login_lockout BOOLEAN,
         last_login_attempt TIMESTAMP DEFAULT now(),
         lockout_time TIMESTAMP DEFAULT now()
       );

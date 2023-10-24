@@ -44,10 +44,12 @@ export class TenantResourceController {
 
 	// Create Resource
 	@Throttle(2, 10)
+	@UseGuards(JwtAuthGuard)
 	@Post()
 	async create(@Body() resource: Resource): Promise<Resource | ResourceControllerException> {
 		try {
-			return await this.resourceService.create(resource);
+			const created = await this.resourceService.create(resource);
+			return created;
 		} catch (e) {
 			return this.handleException(e);
 		}
