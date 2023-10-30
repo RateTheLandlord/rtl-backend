@@ -7,6 +7,7 @@ type ResourceQuery = {
 	page?: number;
 	limit?: number;
 	search?: string;
+	sort?: 'az' | 'za' | 'new' | 'old';
 	country?: string;
 	state?: string;
 	city?: string;
@@ -17,13 +18,22 @@ export class TenantResourceService {
 	constructor(private readonly databaseService: DatabaseService, private resourceDataLayerService: ResourceModel) {}
 
 	public async get(params: ResourceQuery): Promise<ResourcesResponse> {
-		const { page: pageParam, limit: limitParam, search, state, country, city } = params;
+		const { page: pageParam, limit: limitParam, search, sort, state, country, city } = params;
 		const page = pageParam ? pageParam : 1;
 		const limit = limitParam ? limitParam : 25;
 
 		const offset = (page - 1) * limit;
 
 		const sql = this.databaseService.sql;
+
+		let orderBy = sql`id`;
+		if (sort === 'az' || sort === 'za') {
+			orderBy = sql`name`;
+		} else if (sort === 'new' || sort === 'old') {
+			orderBy = sql`date_added`;
+		}
+
+		const sortOrder = sort === 'az' || sort === 'old' ? sql`ASC` : sql`DESC`;
 
 		const searchClause =
 			search?.length > 0
@@ -49,7 +59,8 @@ export class TenantResourceService {
 		const resources = (await sql`
 			SELECT * 
 			FROM tenant_resource
-			WHERE 1 = 1 ${searchClause} ${stateClause} ${countryClause} ${cityClause} LIMIT ${limit} 
+			WHERE 1 = 1 ${searchClause} ${stateClause} ${countryClause} ${cityClause}
+			ORDER BY ${orderBy} ${sortOrder} LIMIT ${limit} 
 			OFFSET ${offset}
 		`) as Array<Resource>;
 
