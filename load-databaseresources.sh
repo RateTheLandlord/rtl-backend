@@ -10,8 +10,8 @@ read -p "Enter the PostgreSQL username: " username
 read -p "Enter the number of dummy rows to load: " num_rows
 
 # Generate random names for landlords
-names=("Johns Housing Services" "Janes Home Help'" "Davids Ltd.'" "Emilys Help'" "Michaels Tenant Resource'" "Sarahs Tenants'" "James the Lawyer",
-      "Lindas Housing Guild'", "Robert Attorney'" "Karen Home Help" "Daniels Tenant Help'" "Jessica the Super Tenant" "William the Mayor",
+names=("Johns Housing Services" "Janes Home Help'" "Davids Ltd." "Emilys Help" "Michaels Tenant Resource" "Sarahs Tenants" "James the Lawyer"
+      "Lindas Housing Guild" "Robert Attorney" "Karen Home Help" "Daniels Tenant Help" "Jessica the Super Tenant" "William the Mayor"
        "Amandas Landlord Review" "Christophers Renter Resource")
 num_names=${#names[@]}
 

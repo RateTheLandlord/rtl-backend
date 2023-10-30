@@ -62,7 +62,7 @@ export class TenantResourceService {
 			WHERE 1 = 1 ${searchClause} ${stateClause} ${countryClause} ${cityClause}
 			ORDER BY ${orderBy} ${sortOrder} LIMIT ${limit} 
 			OFFSET ${offset}
-		`) as any;
+		`) as Array<Resource>;
 
 		// Fetch Total Number of Resources
 		const totalResult = await sql`SELECT COUNT(*) as count FROM tenant_resource WHERE 1=1 ${searchClause} ${stateClause} ${countryClause} ${cityClause}`;
