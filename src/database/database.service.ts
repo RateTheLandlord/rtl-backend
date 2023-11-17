@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import postgres from 'postgres';
-import * as fs from 'fs';
 
 const environment = process.env.ENVIRONMENT as string;
 
