@@ -3,6 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import ley from 'ley';
 import requestIp from 'request-ip';
 import { createAdminUser } from './user/create-initial-user';
+import passport from 'passport';
 
 async function bootstrap() {
 	const app = await NestFactory.create(AppModule);
@@ -12,7 +13,7 @@ async function bootstrap() {
 		dir: 'migrations',
 		driver: 'postgres',
 	});
-
+	app.use(passport.initialize());
 	app.use(requestIp.mw());
 	app.enableCors({
 		origin: process.env.CORS_ORIGIN,

@@ -1,28 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import { IGetUsers, IUser } from './models/user';
-import { DatabaseService } from '../database/database.service';
-import bcrypt = require('bcryptjs');
-
-const saltOrRounds = 10;
+import { IUser } from './models/types';
+import { DatabaseService } from 'src/database/database.service';
 
 @Injectable()
 export class UserService {
 	constructor(private readonly databaseService: DatabaseService) {}
-
-	async findOne(email: string): Promise<IUser[]> {
-		return this.databaseService.sql<IUser[]>`SELECT * FROM users WHERE email = ${email}`;
-	}
-
-	async getMe(id: number): Promise<IGetUsers> {
-		const users = await this.databaseService.sql<IUser[]>`SELECT * FROM users WHERE id = ${id}`;
-
-		const arrUsers = (await users).map((user) => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { password, ...result } = user;
-			return result;
-		});
-		return arrUsers[0];
-	}
 
 	async deleteUser(id: number): Promise<boolean> {
 		await this.databaseService.sql`DELETE FROM users WHERE ID = ${id}`;
@@ -36,30 +18,14 @@ export class UserService {
 		return true;
 	}
 
-	async updateUserLockout(id: number, user: IUser): Promise<boolean> {
-		await this.databaseService
-			.sql`UPDATE users SET login_attempts = ${user.login_attempts}, login_lockout = ${user.login_lockout}, last_login_attempt = ${user.last_login_attempt} WHERE id = ${id}`;
-
-		return true;
-	}
-
-	async getAll(): Promise<IGetUsers[]> {
-		const fullUsers = this.databaseService.sql<IUser[]>`Select * FROM users`;
-		const users = (await fullUsers).map((user) => {
-			// eslint-disable-next-line @typescript-eslint/no-unused-vars
-			const { password, ...result } = user;
-			return result;
-		});
-		return users;
+	async getAll(): Promise<IUser[]> {
+		return this.databaseService.sql<IUser[]>`Select * FROM users`;
 	}
 
 	async create(user: IUser): Promise<IUser> {
-		const salt = bcrypt.genSaltSync(saltOrRounds);
-		user.password = await bcrypt.hash(user.password, salt);
-
 		const id = (
 			await this.databaseService.sql<{ id: number }[]>`
-        INSERT INTO users (name, email, password, blocked, role) VALUES ( ${user.name}, ${user.email}, ${user.password}, ${user.blocked}, ${user.role}) RETURNING id
+        INSERT INTO users (name, email, role) VALUES ( ${user.name}, ${user.email}, ${user.role}) RETURNING id
         ;`
 		)[0].id;
 		user.id = id;
