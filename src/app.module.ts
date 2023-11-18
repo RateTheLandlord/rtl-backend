@@ -18,7 +18,7 @@ import { jwtConstants } from './auth/constants';
 		}),
 		JwtModule.register({
 			secret: jwtConstants.secret,
-			signOptions: { expiresIn: '1h' },
+			signOptions: { expiresIn: '7d' },
 		}),
 		ReviewModule,
 		CaptchaModule,
