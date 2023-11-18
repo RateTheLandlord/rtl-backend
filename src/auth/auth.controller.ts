@@ -20,9 +20,9 @@ export class AuthController {
 		const allUsers = await this.userService.getAll();
 		const isAllowedEmail = allUsers.some((obj) => obj.email === user.email);
 		if (!isAllowedEmail) {
-			return res.redirect(`http://localhost:3000/`);
+			return res.redirect(`${process.env.OAUTH_FAIL_REDIRECT}`);
 		}
 		const token = await this.authService.createToken(user); // Implement createToken in your AuthService
-		return res.redirect(`http://localhost:3000/login?name=${encodeURIComponent(user.name)}&token=${token}`);
+		return res.redirect(`${process.env.OAUTH_SUCCESS_REDIRECT}?name=${encodeURIComponent(user.name)}&token=${token}`);
 	}
 }
