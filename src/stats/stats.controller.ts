@@ -23,21 +23,9 @@ export class StatsController {
 
 	@Throttle(5, 60)
 	@Get()
-	get(
-		@Query('startDate') startDate?: string,
-		@Query('endDate') endDate?: string,
-		@Query('state') state?: string,
-		@Query('country') country?: string,
-		@Query('city') city?: string,
-		@Query('zip') zip?: string,
-	): Promise<any> {
+	get(@Query('startDate') startDate?: string): Promise<any> {
 		return this.statsService.get({
 			startDate,
-			endDate,
-			zip,
-			state,
-			country,
-			city,
 		});
 	}
 }
