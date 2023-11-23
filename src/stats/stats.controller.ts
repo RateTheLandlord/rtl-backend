@@ -1,7 +1,7 @@
 import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { StatsService } from './stats.service';
+import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 
 export type ResourceControllerException = {
 	statusCode: number;
