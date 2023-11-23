@@ -36,6 +36,7 @@
 		"@nestjs/throttler": "^4.0.0",
 		"bad-words": "^3.0.4",
 		"bcryptjs": "^2.4.3",
+		"dayjs": "^1.11.10",
 		"ley": "^0.7.1",
 		"openai": "^3.2.1",
 		"passport": "^0.6.0",

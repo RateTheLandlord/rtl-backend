@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserModule } from './user/user.module';
 import { JwtModule } from '@nestjs/jwt';
 import { jwtConstants } from './auth/constants';
+import { StatsModule } from './stats/stats.module';
 
 @Module({
 	imports: [
@@ -25,6 +26,7 @@ import { jwtConstants } from './auth/constants';
 		AuthModule,
 		UserModule,
 		TenantResourceModule,
+		StatsModule,
 	],
 	controllers: [],
 	providers: [],

@@ -1,7 +1,7 @@
 import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
 import { CaptchaService } from 'src/captcha/captcha-service';
 import { CreateReview } from './models/create-review';
-import { IStats, Review, ReviewsResponse } from './models/review';
+import { Review, ReviewsResponse } from './models/review';
 import { ReviewService } from './review.service';
 import { Throttle } from '@nestjs/throttler';
 import { INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE } from '../auth/constants';
@@ -103,13 +103,6 @@ export class ReviewController {
 	@Get('/flagged')
 	getFlagged(): Promise<Review[]> {
 		return this.reviewService.getFlagged();
-	}
-
-	@Throttle(10, 120)
-	@UseGuards(JwtAuthGuard)
-	@Get('/stats')
-	getStats(): Promise<IStats> {
-		return this.reviewService.getStats();
 	}
 
 	@Throttle(10, 120)
