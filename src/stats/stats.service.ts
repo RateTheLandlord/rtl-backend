@@ -4,6 +4,7 @@ import dayjs from 'dayjs';
 
 type StatsQuery = {
 	startDate?: string;
+	groupBy?: string;
 };
 
 @Injectable()
@@ -11,15 +12,14 @@ export class StatsService {
 	constructor(private readonly databaseService: DatabaseService) {}
 
 	public async get(params: StatsQuery): Promise<any> {
-		const { startDate } = params;
+		const { startDate, groupBy } = params;
 		const sql = this.databaseService.sql;
 
 		const DEFAULT_START = dayjs(new Date()).subtract(7, 'days').format('YYYY-MM-DD');
-		const dateRange = startDate ? sql`${dayjs(startDate).toISOString()} AND NOW()` : sql`${DEFAULT_START} AND NOW()`;
+		const dateRange = startDate ? sql`${dayjs(startDate).format('YYYY-MM-DD')} AND NOW()` : sql`${DEFAULT_START} AND NOW()`;
 
 		const reviewsStatistics = await this.getReviewStatistics(dateRange);
 		const reviewByDate = await this.getReviewByDate(dateRange);
-
 		const formattedReviews = reviewsStatistics.map((row) => ({
 			date: row.date,
 			country_codes: row.country_codes || {},
@@ -28,9 +28,10 @@ export class StatsService {
 			zip: row.zips || {},
 		}));
 
-		const detailed_stats = startDate
-			? this.combineArrays(this.combineObjectsByMonth(formattedReviews), this.combineObjectsByMonth(reviewByDate))
-			: this.combineArrays(formattedReviews, reviewByDate);
+		const detailed_stats =
+			groupBy === 'month'
+				? this.combineArrays(this.combineObjectsByMonth(formattedReviews), this.combineObjectsByMonth(reviewByDate))
+				: this.combineArrays(formattedReviews, reviewByDate);
 
 		const totalStats = await this.getTotalStats();
 
@@ -41,36 +42,38 @@ export class StatsService {
 		const sql = this.databaseService.sql;
 
 		return sql`
-      WITH ReviewStats AS (
-        SELECT
-          date_added::DATE AS date,
-          country_code,
-          city,
-          state,
-          zip,
-          COUNT(*) AS review_count
-        FROM
-          review
-        WHERE
-          date_added BETWEEN ${dateRange}
-        GROUP BY
-          date,
-          country_code,
-          city,
-          state,
-          zip
-      )
-  
+    WITH ReviewStats AS (
       SELECT
-        date,
-        jsonb_object_agg(country_code, review_count) AS country_codes,
-        jsonb_object_agg(city, review_count) AS cities,
-        jsonb_object_agg(zip, review_count) AS zips,
-        jsonb_object_agg(state, review_count) AS states
+        DATE_TRUNC('day', date_added) AS date,
+        country_code,
+        city,
+        state,
+        zip,
+        COUNT(*) AS review_count
       FROM
-        ReviewStats
+        review
+      WHERE
+        date_added BETWEEN ${dateRange}
       GROUP BY
-        date;
+        date,
+        country_code,
+        city,
+        state,
+        zip
+    )
+    
+    SELECT
+      date,
+      jsonb_object_agg(country_code, review_count) AS country_codes,
+      jsonb_object_agg(city, review_count) AS cities,
+      jsonb_object_agg(zip, review_count) AS zips,
+      jsonb_object_agg(state, review_count) AS states
+    FROM
+      ReviewStats
+    GROUP BY
+      date
+    ORDER BY
+      date;
     `;
 	}
 
@@ -78,48 +81,70 @@ export class StatsService {
 		const sql = this.databaseService.sql;
 
 		return sql`
-      SELECT
-        date_added::date AS date,
-        COUNT(*) AS total
-      FROM
-        review
-      WHERE
-        date_added BETWEEN ${dateRange}
-      GROUP BY
-        date_added::date
-      ORDER BY
-        date_added::date;
+    SELECT
+    date_trunc('day', date_added) AS date,
+    COUNT(*) AS total
+  FROM
+    review
+  WHERE
+    date_added BETWEEN ${dateRange}
+  GROUP BY
+    date
+  ORDER BY
+    date;
     `;
 	}
 
-	combineObjectsByMonth = (array) => {
-		const resultArray = [];
+	combineObjectsByMonth(objects) {
+		const groupedByMonth = {};
 
-		array.forEach((obj) => {
-			const { date, ...rest } = obj;
-			const month = dayjs(date).month(); // Extract 'YYYY-MM' from the date
+		objects.forEach((obj) => {
+			const month = new Date(obj.date).getMonth();
+			const year = new Date(obj.date).getFullYear();
 
-			// Find existing entry for the month or create a new one
-			const existingEntry = resultArray.find((entry) => entry.month === month);
-
-			if (existingEntry) {
-				// Update existing entry by summing numerical values
-				Object.keys(rest).forEach((key) => {
-					existingEntry[key] = (existingEntry[key] || 0) + obj[key];
-				});
+			if (!groupedByMonth[month]) {
+				groupedByMonth[month] = { ...obj, date: `${year}-${month}` };
 			} else {
-				// Create a new entry for the month
-				const newEntry = { month, ...rest };
-				resultArray.push(newEntry);
+				groupedByMonth[month].date = `${year}-${month}`;
+				// Combine values for existing month
+				groupedByMonth[month].total = Number(groupedByMonth[month].total) + Number(obj.total);
+
+				// Combine country_codes
+				if (obj.country_codes) {
+					Object.entries(obj.country_codes).forEach(([country, count]) => {
+						groupedByMonth[month].country_codes[country] = (groupedByMonth[month].country_codes[country] || 0) + count;
+					});
+				}
+
+				// Combine cities
+				if (obj.cities) {
+					Object.entries(obj.cities).forEach(([city, count]) => {
+						groupedByMonth[month].cities[city] = (groupedByMonth[month].cities[city] || 0) + count;
+					});
+				}
+
+				// Combine state
+				if (obj.states) {
+					Object.entries(obj.states).forEach(([state, count]) => {
+						groupedByMonth[month].state[state] = (groupedByMonth[month].state[state] || 0) + count;
+					});
+				}
+
+				// Combine zip
+				if (obj.zips) {
+					Object.entries(obj.zips).forEach(([zip, count]) => {
+						groupedByMonth[month].zip[zip] = (groupedByMonth[month].zip[zip] || 0) + count;
+					});
+				}
 			}
 		});
 
-		return resultArray;
-	};
+		return Object.values(groupedByMonth);
+	}
 
-	combineArrays = (reviewStats, reviews) => {
-		return reviewStats.map((reviewStat) => {
-			const correspondingReview = reviews.find((review) => review.month === reviewStat.month);
+	combineArrays = (detailed_stats, reviewsByDate) => {
+		return detailed_stats.map((reviewStat) => {
+			const correspondingReview = reviewsByDate.find((review) => dayjs(review.date).format('YYYY-MM-DD') === dayjs(reviewStat.date).format('YYYY-MM-DD'));
 			return { ...reviewStat, ...correspondingReview };
 		});
 	};

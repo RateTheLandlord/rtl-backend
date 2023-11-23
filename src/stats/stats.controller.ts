@@ -1,6 +1,5 @@
-import { BadRequestException, Body, Controller, Delete, Get, HttpException, HttpStatus, Param, Post, Put, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards } from '@nestjs/common';
 import { Throttle } from '@nestjs/throttler';
-import { INTERNAL_SERVER_ERROR, NOT_ACCEPTABLE } from '../auth/constants';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard';
 import { StatsService } from './stats.service';
 
@@ -13,19 +12,13 @@ export type ResourceControllerException = {
 export class StatsController {
 	constructor(private readonly statsService: StatsService) {}
 
-	private handleException(e: BadRequestException | HttpException | unknown): never {
-		if (e instanceof BadRequestException) {
-			throw new HttpException(NOT_ACCEPTABLE, HttpStatus.NOT_ACCEPTABLE);
-		} else {
-			throw new HttpException(INTERNAL_SERVER_ERROR, HttpStatus.INTERNAL_SERVER_ERROR);
-		}
-	}
-
 	@Throttle(5, 60)
+	@UseGuards(JwtAuthGuard)
 	@Get()
-	get(@Query('startDate') startDate?: string): Promise<any> {
+	get(@Query('startDate') startDate?: string, @Query('groupBy') groupBy?: string): Promise<any> {
 		return this.statsService.get({
 			startDate,
+			groupBy,
 		});
 	}
 }
