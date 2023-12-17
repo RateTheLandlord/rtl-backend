@@ -85,8 +85,11 @@ for ((i=1; i<=num_rows; i++)); do
   respect=$(generate_random_rating)
   review=$(generate_random_review)
 
-  # Insert the data into the table
-  docker exec -it "$container_name" psql -U "$username" -c "INSERT INTO review (landlord, country_code, city, state, zip, review, repair, health, stability, privacy, respect, flagged, flagged_reason, admin_approved, admin_edited) VALUES ('$landlord', '$country', '$city', '$state', '$zip', '$review', $repair, $health, $stability, $privacy, $respect, false, NULL, false, false);"
+  # Generate a random rent value between NULL and 5000
+  rent=$(shuf -i 0-5000 -n 1)
+
+  # Insert the data into the table, including the "rent" column
+  docker exec -it "$container_name" psql -U "$username" -c "INSERT INTO review (landlord, country_code, city, state, zip, review, repair, health, stability, privacy, respect, rent, flagged, flagged_reason, admin_approved, admin_edited) VALUES ('$landlord', '$country', '$city', '$state', '$zip', '$review', $repair, $health, $stability, $privacy, $respect, $rent, false, NULL, false, false);"
 done
 
 echo "Data loaded successfully!"
