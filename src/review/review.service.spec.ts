@@ -51,6 +51,7 @@ describe('ValidateDuplicateReviewService', () => {
 					flagged_reason: '',
 					admin_approved: true,
 					admin_edited: false,
+					rent: null,
 				},
 				{
 					id: 2,
@@ -70,6 +71,7 @@ describe('ValidateDuplicateReviewService', () => {
 					flagged_reason: '',
 					admin_approved: true,
 					admin_edited: false,
+					rent: 1000,
 				},
 			];
 			const reviewUserSubmitted = 'This is a great product!';
@@ -99,6 +101,7 @@ describe('ValidateDuplicateReviewService', () => {
 					flagged_reason: '',
 					admin_approved: true,
 					admin_edited: false,
+					rent: null,
 				},
 				{
 					id: 2,
@@ -118,6 +121,7 @@ describe('ValidateDuplicateReviewService', () => {
 					flagged_reason: '',
 					admin_approved: true,
 					admin_edited: false,
+					rent: 1000,
 				},
 			];
 			const reviewUserSubmitted = 'This sucks so bad I do not like it.';

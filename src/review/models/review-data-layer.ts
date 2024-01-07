@@ -27,12 +27,12 @@ export class ReviewModel {
 				await this.databaseService.sql<{ id: number }[]>`
           INSERT INTO review
           (landlord, country_code, city, state, zip, review, repair, health, stability, privacy, respect, flagged,
-          flagged_reason, admin_approved, admin_edited)
+          flagged_reason, admin_approved, admin_edited, rent)
           VALUES
           (${inputReview.landlord}, ${inputReview.country_code}, ${inputReview.city}, ${inputReview.state},
           ${inputReview.zip}, ${inputReview.review}, ${inputReview.repair}, ${inputReview.health},
           ${inputReview.stability}, ${inputReview.privacy}, ${inputReview.respect}, ${inputReview.flagged},
-          ${inputReview.flagged_reason}, ${inputReview.admin_approved}, ${inputReview.admin_edited})
+          ${inputReview.flagged_reason}, ${inputReview.admin_approved}, ${inputReview.admin_edited}, ${inputReview.rent})
           RETURNING id;
         `
 			)[0].id;
@@ -72,6 +72,7 @@ export class ReviewModel {
                flagged_reason = ${review.flagged_reason},
                admin_approved = ${review.admin_approved},
                admin_edited   = ${review.admin_edited}
+			   rent = ${review.rent}
            WHERE id = ${id};`;
 
 		return review;
