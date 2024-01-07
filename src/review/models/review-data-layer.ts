@@ -71,7 +71,7 @@ export class ReviewModel {
                flagged = ${review.flagged},
                flagged_reason = ${review.flagged_reason},
                admin_approved = ${review.admin_approved},
-               admin_edited   = ${review.admin_edited}
+               admin_edited   = ${review.admin_edited},
 			   rent = ${review.rent}
            WHERE id = ${id};`;
 
