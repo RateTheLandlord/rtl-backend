@@ -36,6 +36,7 @@ lerna-debug.log*
 
 # Secrets
 .env
+.env.local
 
 # documentation
 documentation/
@@ -43,3 +44,4 @@ documentation/
 
 **/certificates/
 *.crt
+.vercel
